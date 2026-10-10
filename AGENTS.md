@@ -15,3 +15,7 @@
 - Keep assistant controls disconnected behind a separate Radix dialog until an ElevenLabs session integration is configured and tested; do not fake responses or voice activity.
 - Keep enquiry submission local and explicitly unavailable until a real submission service is connected; validation must never imply delivery.
 - Load language preference after hydration and persist only user language choices to avoid server/client rendering mismatches.
+- Share hydration-safe language and client metadata updates through usePageLanguage on content routes; omit canonical until a real published domain is configured.
+- Validate enquiries in the shared enquiry module; require name, phone, product/category and consent while keeping quantity/comments optional.
+- Keep the privacy route factual about the current disconnected services and require owner policy approval before enabling data collection.
+- Hide the assistant launcher while contacts are visible so it cannot obscure inquiry controls.

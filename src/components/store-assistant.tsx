@@ -13,7 +13,7 @@ export function StoreAssistant({ open, onOpenChange, language }: { open: boolean
       <Dialog.Content className="assistant-panel">
         <div className="assistant-header">
           <span className="assistant-avatar"><AudioLines aria-hidden="true" /></span>
-          <div><Dialog.Title className="font-semibold">{t.assistantTitle}</Dialog.Title><p className="text-xs text-muted-foreground">{t.assistantStatus}</p></div>
+          <div className="min-w-0"><Dialog.Title className="font-semibold">{t.assistantTitle}</Dialog.Title><p className="text-xs text-muted-foreground">{t.assistantStatus}</p></div>
           <Dialog.Close asChild><Button variant="ghost" size="icon" className="ml-auto min-h-11 min-w-11" aria-label={t.close}><X /></Button></Dialog.Close>
         </div>
         <div className="assistant-conversation">
