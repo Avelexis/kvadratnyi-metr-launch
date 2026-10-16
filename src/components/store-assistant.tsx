@@ -19,22 +19,9 @@ export function StoreAssistant({ open, onOpenChange, language }: { open: boolean
 
   const conversation = useConversation({
     onMessage: (message) => {
-      if (message.type === 'user_transcript') {
-        const text = message.user_transcription_event.user_transcript;
-        if (text.trim()) setMessages(prev => [...prev, { role: 'user', text }]);
-      } else if (message.type === 'agent_response') {
-        const text = message.agent_response_event.agent_response;
-        if (text.trim()) setMessages(prev => [...prev, { role: 'agent', text }]);
-      } else if (message.type === 'agent_response_correction') {
-        const text = message.agent_response_correction_event.corrected_agent_response;
-        setMessages(prev => {
-          const next = [...prev];
-          for (let i = next.length - 1; i >= 0; i--) {
-            if (next[i]?.role === 'agent') { next[i] = { role: 'agent', text }; break; }
-          }
-          return next;
-        });
-      }
+      const text = message.message;
+      if (!text.trim()) return;
+      setMessages(prev => [...prev, { role: message.role === 'user' ? 'user' : 'agent', text }]);
     },
     onError: () => { setError('connection'); setConnecting(false); },
     onDisconnect: () => setConnecting(false),
