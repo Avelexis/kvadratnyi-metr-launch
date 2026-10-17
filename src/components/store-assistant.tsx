@@ -34,6 +34,19 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
     onError: () => { setError('connection'); setConnecting(false); },
     onConnect: () => setConnecting(false),
     onDisconnect: () => setConnecting(false),
+    onStatusChange: ({ status }) => {
+      // WebRTC media can be blocked by the visitor's network; retry once over WebSocket.
+      if (status === 'error' && !fellBackRef.current && credentialsRef.current?.signedUrl) {
+        fellBackRef.current = true;
+        setConnecting(true);
+        try {
+          conversation.startSession({ signedUrl: credentialsRef.current.signedUrl, connectionType: 'websocket' });
+        } catch {
+          setError('connection');
+          setConnecting(false);
+        }
+      }
+    },
   });
 
   const connected = conversation.status === 'connected';
@@ -42,6 +55,7 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
     if (connecting || connected) return; // one session at a time
     setError(null);
     setConnecting(true);
+    fellBackRef.current = false;
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch {
@@ -50,8 +64,9 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
       return;
     }
     try {
-      const { token } = await getAssistantToken();
-      conversation.startSession({ conversationToken: token, connectionType: 'webrtc' });
+      const credentials = await getAssistantCredentials();
+      credentialsRef.current = credentials;
+      conversation.startSession({ conversationToken: credentials.token, connectionType: 'webrtc' });
     } catch {
       setError('connection');
       setConnecting(false);
