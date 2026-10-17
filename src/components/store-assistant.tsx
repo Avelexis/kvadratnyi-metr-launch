@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useConversation } from '@elevenlabs/react';
+import { ConversationProvider, useConversation } from '@elevenlabs/react';
 import { Mic, X, ArrowUp, AudioLines, PhoneOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { content, type Language } from '@/lib/store-content';
@@ -10,6 +10,12 @@ type ChatMessage = { role: 'user' | 'agent'; text: string };
 type AssistantError = 'mic' | 'connection' | null;
 
 export function StoreAssistant({ open, onOpenChange, language }: { open: boolean; onOpenChange: (value: boolean) => void; language: Language }) {
+  return <ConversationProvider>
+    <AssistantDialog open={open} onOpenChange={onOpenChange} language={language} />
+  </ConversationProvider>;
+}
+
+function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOpenChange: (value: boolean) => void; language: Language }) {
   const t = content[language];
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -42,21 +48,21 @@ export function StoreAssistant({ open, onOpenChange, language }: { open: boolean
     }
     try {
       const { token } = await getAssistantToken();
-      await conversation.startSession({ conversationToken: token, connectionType: 'webrtc' });
+      conversation.startSession({ conversationToken: token, connectionType: 'webrtc' });
     } catch {
       setError('connection');
-    } finally {
       setConnecting(false);
     }
   }, [connecting, connected, conversation]);
 
-  const endConversation = useCallback(async () => {
-    await conversation.endSession();
+  const endConversation = useCallback(() => {
+    conversation.endSession();
+    setConnecting(false);
   }, [conversation]);
 
   // Clean up the session whenever the panel closes.
   useEffect(() => {
-    if (!open && conversation.status !== 'disconnected') void conversation.endSession();
+    if (!open && conversation.status !== 'disconnected') conversation.endSession();
   }, [open, conversation]);
 
   useEffect(() => {
