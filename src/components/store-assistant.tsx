@@ -30,6 +30,7 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
       setMessages(prev => [...prev, { role: message.role === 'user' ? 'user' : 'agent', text }]);
     },
     onError: () => { setError('connection'); setConnecting(false); },
+    onConnect: () => setConnecting(false),
     onDisconnect: () => setConnecting(false),
   });
 
@@ -88,7 +89,7 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
       <Dialog.Content className="assistant-panel" onEscapeKeyDown={() => onOpenChange(false)}>
         <div className="assistant-header">
           <span className="assistant-avatar"><AudioLines aria-hidden="true" /></span>
-          <div className="min-w-0"><Dialog.Title className="font-semibold">{t.assistantTitle}</Dialog.Title><p className="text-xs text-muted-foreground" role="status">{statusText}</p></div>
+          <div className="min-w-0"><Dialog.Title className="font-semibold">{t.assistantTitle}</Dialog.Title><p className="text-xs text-muted-foreground" role="status" data-sdk-status={conversation.status}>{statusText}</p></div>
           <Dialog.Close asChild><Button variant="ghost" size="icon" className="ml-auto min-h-11 min-w-11" aria-label={t.close}><X /></Button></Dialog.Close>
         </div>
         <div className="assistant-conversation" ref={scrollRef}>
