@@ -4,7 +4,7 @@ import { ConversationProvider, useConversation } from '@elevenlabs/react';
 import { Mic, X, ArrowUp, AudioLines, PhoneOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { content, type Language } from '@/lib/store-content';
-import { getAssistantToken } from '@/lib/assistant.functions';
+import { getAssistantCredentials } from '@/lib/assistant.functions';
 
 type ChatMessage = { role: 'user' | 'agent'; text: string };
 type AssistantError = 'mic' | 'connection' | null;
@@ -22,6 +22,8 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<AssistantError>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const credentialsRef = useRef<{ token: string; signedUrl: string | null } | null>(null);
+  const fellBackRef = useRef(false);
 
   const conversation = useConversation({
     onMessage: (message) => {
@@ -29,7 +31,19 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
       if (!text.trim()) return;
       setMessages(prev => [...prev, { role: message.role === 'user' ? 'user' : 'agent', text }]);
     },
-    onError: () => { setError('connection'); setConnecting(false); },
+    onError: () => {
+      // WebRTC media can be blocked by the visitor's network; retry once over WebSocket.
+      if (!fellBackRef.current && credentialsRef.current?.signedUrl) {
+        fellBackRef.current = true;
+        try {
+          conversation.startSession({ signedUrl: credentialsRef.current.signedUrl, connectionType: 'websocket' });
+          return;
+        } catch { /* fall through to the error state */ }
+      }
+      setError('connection');
+      setConnecting(false);
+    },
+    onConnect: () => setConnecting(false),
     onDisconnect: () => setConnecting(false),
   });
 
@@ -39,6 +53,7 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
     if (connecting || connected) return; // one session at a time
     setError(null);
     setConnecting(true);
+    fellBackRef.current = false;
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch {
@@ -47,8 +62,9 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
       return;
     }
     try {
-      const { token } = await getAssistantToken();
-      conversation.startSession({ conversationToken: token, connectionType: 'webrtc' });
+      const credentials = await getAssistantCredentials();
+      credentialsRef.current = credentials;
+      conversation.startSession({ conversationToken: credentials.token, connectionType: 'webrtc' });
     } catch {
       setError('connection');
       setConnecting(false);
@@ -88,7 +104,7 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
       <Dialog.Content className="assistant-panel" onEscapeKeyDown={() => onOpenChange(false)}>
         <div className="assistant-header">
           <span className="assistant-avatar"><AudioLines aria-hidden="true" /></span>
-          <div className="min-w-0"><Dialog.Title className="font-semibold">{t.assistantTitle}</Dialog.Title><p className="text-xs text-muted-foreground" role="status">{statusText}</p></div>
+          <div className="min-w-0"><Dialog.Title className="font-semibold">{t.assistantTitle}</Dialog.Title><p className="text-xs text-muted-foreground" role="status" data-sdk-status={conversation.status}>{statusText}</p></div>
           <Dialog.Close asChild><Button variant="ghost" size="icon" className="ml-auto min-h-11 min-w-11" aria-label={t.close}><X /></Button></Dialog.Close>
         </div>
         <div className="assistant-conversation" ref={scrollRef}>
