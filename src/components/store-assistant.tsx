@@ -31,22 +31,20 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
       if (!text.trim()) return;
       setMessages(prev => [...prev, { role: message.role === 'user' ? 'user' : 'agent', text }]);
     },
-    onError: () => { setError('connection'); setConnecting(false); },
-    onConnect: () => setConnecting(false),
-    onDisconnect: () => setConnecting(false),
-    onStatusChange: ({ status }) => {
+    onError: () => {
       // WebRTC media can be blocked by the visitor's network; retry once over WebSocket.
-      if (status === 'error' && !fellBackRef.current && credentialsRef.current?.signedUrl) {
+      if (!fellBackRef.current && credentialsRef.current?.signedUrl) {
         fellBackRef.current = true;
-        setConnecting(true);
         try {
           conversation.startSession({ signedUrl: credentialsRef.current.signedUrl, connectionType: 'websocket' });
-        } catch {
-          setError('connection');
-          setConnecting(false);
-        }
+          return;
+        } catch { /* fall through to the error state */ }
       }
+      setError('connection');
+      setConnecting(false);
     },
+    onConnect: () => setConnecting(false),
+    onDisconnect: () => setConnecting(false),
   });
 
   const connected = conversation.status === 'connected';
