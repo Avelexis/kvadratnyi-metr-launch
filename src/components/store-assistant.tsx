@@ -4,7 +4,7 @@ import { ConversationProvider, useConversation } from '@elevenlabs/react';
 import { Mic, X, ArrowUp, AudioLines, PhoneOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { content, type Language } from '@/lib/store-content';
-import { getAssistantToken } from '@/lib/assistant.functions';
+import { getAssistantCredentials } from '@/lib/assistant.functions';
 
 type ChatMessage = { role: 'user' | 'agent'; text: string };
 type AssistantError = 'mic' | 'connection' | null;
@@ -22,6 +22,8 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<AssistantError>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const credentialsRef = useRef<{ token: string; signedUrl: string | null } | null>(null);
+  const fellBackRef = useRef(false);
 
   const conversation = useConversation({
     onMessage: (message) => {
