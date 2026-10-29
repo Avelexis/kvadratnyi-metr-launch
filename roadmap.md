@@ -17,3 +17,5 @@
 
 # Remaining integrations
 - [ ] Contact form: needs a delivery service and recipient address; owner must confirm data controller, recipient, retention and data-rights contact before enabling submissions.
+
+- [ ] Product catalog database + assistant catalog lookup (from uploaded brief and demo catalog) — waiting on user decisions
