@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { StoreAssistant } from '@/components/store-assistant';
 import { usePageLanguage } from '@/hooks/use-page-language';
 import { validateEnquiry } from '@/lib/enquiry';
-import { content, store } from '@/lib/store-content';
+import { catalogText, content, store } from '@/lib/store-content';
 import hero from '@/assets/construction-hero.webp';
 import building from '@/assets/building.webp';
 import mixes from '@/assets/mixes.webp';
@@ -87,7 +87,7 @@ function Index() {
       <section className="category-section section" id="categories"><div className="wrap">
         <div className="section-heading"><div><p className="eyebrow">{t.categoryEyebrow}</p><h2>{t.categoryTitle}</h2></div><p className="section-intro">{t.categoryText}</p></div>
         <div className="category-grid">{t.categories.map(([title, description], i) => <article className="category-card" key={i}><div className="category-photo"><img src={images[i]} alt={title} loading="lazy" width={640} height={640} /><span className="category-index">0{i + 1}</span></div><div className="category-detail"><h3>{title}</h3><p>{description}</p><Button variant="ghost" className="category-link" onClick={() => inquiry(title)}>{t.inquire}<ArrowUpRight /></Button></div></article>)}</div>
-        <p className="inventory-note"><Info size={15} />{t.categoryNote}</p>
+        <p className="inventory-note"><Info size={15} />{t.categoryNote} <Link to="/catalog" className="text-link">{catalogText[language].title}<ArrowUpRight size={14} /></Link></p>
       </div></section>
       <section className="about-section section" id="advantages"><div className="wrap about-layout"><div className="about-photo"><img src={hero} alt={language === 'uk' ? 'Ілюстрація матеріалів та інструментів для ремонту' : 'Illustrative renovation materials and tools'} width={1920} height={1024} loading="lazy" /><div className="about-photo-caption"><span className="brand-mark" aria-hidden="true">м<span>²</span></span><span>{t.brand}<small>{t.location}</small></span></div><span className="about-photo-note">{t.photoNote}</span></div><div className="about-copy"><p className="eyebrow">{t.aboutEyebrow}</p><h2>{t.aboutTitle}</h2><p className="about-text">{t.aboutText}</p><div className="benefits-grid">{t.benefits.map(([title, description], i) => { const Icon = benefitIcons[i] ?? Layers; return <div className="benefit" key={i}><Icon aria-hidden="true" /><h3>{title}</h3><p>{description}</p></div>; })}</div></div></div></section>
       <section className="gallery-section section"><div className="wrap"><div className="section-heading"><div><h2>{t.galleryTitle}</h2><p className="gallery-note">{t.galleryNote}</p></div></div><div className="gallery-grid">{[building, tools, finishing].map((src, i) => <figure key={src}><img src={src} width={640} height={640} loading="lazy" alt={`${t.categories[[0, 2, 3][i] ?? 0]?.[0]} — ${t.photoNote}`} /><figcaption>{t.categories[[0, 2, 3][i] ?? 0]?.[0]}</figcaption></figure>)}</div></div></section>

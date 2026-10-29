@@ -5,6 +5,7 @@ import { Mic, X, ArrowUp, AudioLines, PhoneOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { content, type Language } from '@/lib/store-content';
 import { getAssistantCredentials } from '@/lib/assistant.functions';
+import { searchCatalog } from '@/lib/catalog.functions';
 
 type ChatMessage = { role: 'user' | 'agent'; text: string };
 type AssistantError = 'mic' | 'connection' | null;
@@ -26,6 +27,13 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
   const fellBackRef = useRef(false);
 
   const conversation = useConversation({
+    // Client tool "searchCatalog" must also be declared on the ElevenLabs agent. Returns only verified, public catalog records.
+    clientTools: {
+      searchCatalog: async (params: { query?: string }) => {
+        try { return JSON.stringify(await searchCatalog({ data: { query: String(params?.query ?? '') } })); }
+        catch { return JSON.stringify({ results: [], total: 0, error: 'unavailable' }); }
+      },
+    },
     onMessage: (message) => {
       const text = message.message;
       if (!text.trim()) return;
