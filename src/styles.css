@@ -376,3 +376,7 @@ footer { background: var(--card); padding-top: 34px; padding-bottom: 25px; }
 .assistant-message { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; align-self: flex-start; background: color-mix(in oklab, var(--glass) 80%, transparent); border: 1px solid var(--border); }
 .assistant-message.is-user { align-self: flex-end; background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
 .assistant-conversation { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+
+.catalog-list { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); list-style: none; padding: 0; }
+.catalog-item { border: 1px solid var(--border); border-radius: 1rem; padding: 1rem; background: color-mix(in oklab, var(--card) 80%, transparent); }
+.catalog-item h2 { font-size: 1rem; margin: 0 0 .25rem; }

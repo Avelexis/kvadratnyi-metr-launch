@@ -1,0 +1,2 @@
+alter table public.products drop constraint products_unit_check;
+alter table public.products add constraint products_unit_check check (unit in ('piece','kg','bag','meter','m2','m3','liter','pack','roll','sheet','set','ton','pair','can'));

@@ -41,3 +41,7 @@ export const content = {
   },
 };
 export function validPhone(value: string) { const digits = value.replace(/\D/g, ''); return digits.length >= 7 && digits.length <= 15; }
+export const catalogText = {
+  uk: { title: 'Каталог товарів', intro: 'Тут з’являться лише підтверджені магазином товари. Ціни та наявність показуються тільки тоді, коли вони перевірені.', empty: 'Каталог ще наповнюється. Уточніть потрібний товар у магазині — ми відповімо щодо ціни й наявності.', error: 'Каталог тимчасово недоступний. Спробуйте пізніше.', ask: 'Запитати ціну', priceUnknown: 'Ціну потрібно уточнити', stock: { in_stock: 'Є в наявності', out_of_stock: 'Немає в наявності', on_order: 'Під замовлення', unknown: 'Наявність уточнюйте' }, unit: 'од.', seo: 'Каталог — Квадратний метр', seoText: 'Перевірені товари магазину «Квадратний метр» у Бобринці.' },
+  en: { title: 'Product catalog', intro: 'Only products confirmed by the store appear here. Prices and availability are shown only when verified.', empty: 'The catalog is still being filled. Ask the store about the product you need — they will reply about price and availability.', error: 'The catalog is temporarily unavailable. Please try later.', ask: 'Ask for a price', priceUnknown: 'Price needs confirmation', stock: { in_stock: 'In stock', out_of_stock: 'Out of stock', on_order: 'On order', unknown: 'Check availability' }, unit: 'unit', seo: 'Catalog — Kvadratnyi Metr', seoText: 'Verified products from the Kvadratnyi Metr store in Bobrynets.' },
+} as const;
