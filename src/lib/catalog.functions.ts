@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
-import { matches, normalizeQuery, toAnswer, type CatalogProduct } from '@/lib/catalog';
+import { searchForAssistant, toAnswer, type CatalogProduct } from '@/lib/catalog';
 
 function publicClient() {
   const key = process.env['SUPABASE_PUBLISHABLE_KEY']!;
@@ -18,16 +18,15 @@ function publicClient() {
 
 const SELECT = 'id, sku, name_uk, name_en, brand, unit, specifications, is_active, is_demo, category:categories(name_uk, name_en), prices:product_prices(price, currency, valid_from, valid_until, is_demo), inventory:product_inventory(availability_status, updated_at, source)';
 
-// Public, read-only. Row-level rules already hide inactive, demo and expired records.
+// Assistant lookup over the internal catalog (includes inactive/demo rows by request). Read-only; demo prices are returned flagged as indicative.
 export const searchCatalog = createServerFn({ method: 'POST' })
   .inputValidator((input: { query: string }) => ({ query: String(input?.query ?? '').slice(0, 120) }))
   .handler(async ({ data }) => {
-    const terms = normalizeQuery(data.query);
-    if (!terms.length) return { results: [], total: 0 };
-    const { data: rows, error } = await publicClient().from('products').select(SELECT).limit(1000);
+    if (!data.query.trim()) return { results: [], total: 0 };
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const { data: rows, error } = await supabaseAdmin.from('products').select(SELECT).limit(5000);
     if (error) { console.error('Catalog search failed', error.message); return { results: [], total: 0, error: 'unavailable' }; }
-    const hits = (rows as unknown as CatalogProduct[]).filter(p => matches(p, terms));
-    return { results: hits.slice(0, 5).map(p => toAnswer(p)), total: hits.length };
+    return searchForAssistant(rows as unknown as CatalogProduct[], data.query);
   });
 
 export const listCatalog = createServerFn({ method: 'GET' }).handler(async () => {
