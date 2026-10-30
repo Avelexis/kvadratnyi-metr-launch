@@ -18,4 +18,6 @@
 # Remaining integrations
 - [ ] Contact form: needs a delivery service and recipient address; owner must confirm data controller, recipient, retention and data-rights contact before enabling submissions.
 
-- [ ] Product catalog database + assistant catalog lookup (from uploaded brief and demo catalog) — waiting on user decisions
+- [x] Product catalog database, /catalog page, assistant searchCatalog tool (demo rows hidden)
+- [ ] Admin catalog screen — blocked: needs sign-in and an admin account
+- [ ] Add searchCatalog client tool + prompt on the ElevenLabs agent — owner action

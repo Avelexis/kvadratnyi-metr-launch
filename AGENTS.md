@@ -19,3 +19,5 @@
 - Validate enquiries in the shared enquiry module; require name, phone, product/category and consent while keeping quantity/comments optional.
 - Keep the privacy route factual about the current disconnected services and require owner policy approval before enabling data collection.
 - Hide the assistant launcher while contacts are visible so it cannot obscure inquiry controls.
+- Catalog visibility is enforced by row-level rules (active, non-demo, current prices only) and price/stock resolution lives in src/lib/catalog.ts, so the page and the assistant can never show demo or unverified data.
+- The assistant reads the catalog only through the searchCatalog client tool backed by a public read-only server function, never raw SQL.

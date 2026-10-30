@@ -56,7 +56,7 @@ export function matches(product: CatalogProduct, terms: string[]): boolean {
 export function toAnswer(product: CatalogProduct, now = new Date()) {
   return {
     name: product.name_uk, name_en: product.name_en, sku: product.sku, brand: product.brand,
-    category: product.category?.name_uk ?? null, unit: product.unit, specifications: product.specifications,
+    category: product.category?.name_uk ?? null, unit: product.unit, specifications: Object.fromEntries(Object.entries(product.specifications ?? {}).map(([k, v]) => [k, String(v)])) as Record<string, string>,
     price: resolvePrice(product.prices, now), availability: resolveAvailability(product.inventory, now),
   };
 }
