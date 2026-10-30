@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { content, type Language } from '@/lib/store-content';
 import { getAssistantCredentials } from '@/lib/assistant.functions';
 import { searchCatalog } from '@/lib/catalog.functions';
+import { cleanAgentText } from '@/lib/catalog';
 
 type ChatMessage = { role: 'user' | 'agent'; text: string };
 type AssistantError = 'mic' | 'connection' | null;
@@ -35,7 +36,7 @@ function AssistantDialog({ open, onOpenChange, language }: { open: boolean; onOp
       },
     },
     onMessage: (message) => {
-      const text = message.message;
+      const text = message.role === 'user' ? message.message : cleanAgentText(message.message);
       if (!text.trim()) return;
       setMessages(prev => [...prev, { role: message.role === 'user' ? 'user' : 'agent', text }]);
     },
