@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ApiPublicSearchCatalogRouteImport } from './routes/api/public/search-catalog'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,44 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSearchCatalogRoute = ApiPublicSearchCatalogRouteImport.update({
+  id: '/api/public/search-catalog',
+  path: '/api/public/search-catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/privacy': typeof PrivacyRoute
+  '/api/public/search-catalog': typeof ApiPublicSearchCatalogRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/privacy': typeof PrivacyRoute
+  '/api/public/search-catalog': typeof ApiPublicSearchCatalogRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/privacy': typeof PrivacyRoute
+  '/api/public/search-catalog': typeof ApiPublicSearchCatalogRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/catalog' | '/privacy'
+  fullPaths: '/' | '/catalog' | '/privacy' | '/api/public/search-catalog'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/catalog' | '/privacy'
-  id: '__root__' | '/' | '/catalog' | '/privacy'
+  to: '/' | '/catalog' | '/privacy' | '/api/public/search-catalog'
+  id: '__root__' | '/' | '/catalog' | '/privacy' | '/api/public/search-catalog'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogRoute: typeof CatalogRoute
   PrivacyRoute: typeof PrivacyRoute
+  ApiPublicSearchCatalogRoute: typeof ApiPublicSearchCatalogRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/search-catalog': {
+      id: '/api/public/search-catalog'
+      path: '/api/public/search-catalog'
+      fullPath: '/api/public/search-catalog'
+      preLoaderRoute: typeof ApiPublicSearchCatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogRoute: CatalogRoute,
   PrivacyRoute: PrivacyRoute,
+  ApiPublicSearchCatalogRoute: ApiPublicSearchCatalogRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
