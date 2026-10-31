@@ -20,4 +20,5 @@
 
 - [x] Product catalog database, /catalog page, assistant searchCatalog tool (demo rows hidden)
 - [ ] Admin catalog screen — blocked: needs sign-in and an admin account
-- [ ] Add searchCatalog client tool + prompt on the ElevenLabs agent — owner action
+- [x] ElevenLabs Server Tool webhook: POST /api/public/search-catalog (shared-secret header, zod validation, reuses searchForAssistant; verified live — cement query returns 266.11 UAH indicative)
+- [ ] ElevenLabs dashboard setup — owner action: add Server Tool "searchCatalog" (URL, x-catalog-secret header, query schema) + agent instructions to call it before price answers

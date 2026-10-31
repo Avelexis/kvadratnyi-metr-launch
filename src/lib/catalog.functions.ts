@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
-import { searchForAssistant, toAnswer, type CatalogProduct } from '@/lib/catalog';
+import { CATALOG_SELECT, searchForAssistant, toAnswer, type CatalogProduct } from '@/lib/catalog';
 
 function publicClient() {
   const key = process.env['SUPABASE_PUBLISHABLE_KEY']!;
@@ -16,7 +16,7 @@ function publicClient() {
   });
 }
 
-const SELECT = 'id, sku, name_uk, name_en, brand, unit, specifications, is_active, is_demo, category:categories(name_uk, name_en), prices:product_prices(price, currency, valid_from, valid_until, is_demo), inventory:product_inventory(availability_status, updated_at, source)';
+const SELECT = CATALOG_SELECT;
 
 // Assistant lookup over the internal catalog (includes inactive/demo rows by request). Read-only; demo prices are returned flagged as indicative.
 export const searchCatalog = createServerFn({ method: 'POST' })
