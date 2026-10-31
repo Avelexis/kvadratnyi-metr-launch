@@ -1,5 +1,8 @@
 // Browser-safe catalog rules shared by the server retrieval layer, the catalog page and tests.
 
+/** Shared product select used by every catalog query (server function and webhook). */
+export const CATALOG_SELECT = 'id, sku, name_uk, name_en, brand, unit, specifications, is_active, is_demo, category:categories(name_uk, name_en), prices:product_prices(price, currency, valid_from, valid_until, is_demo), inventory:product_inventory(availability_status, updated_at, source)';
+
 export type PriceRecord = { price: number; currency: string; valid_from: string; valid_until: string | null; is_demo?: boolean };
 export type InventoryRecord = { availability_status: string; updated_at: string; source: string | null };
 export type CatalogProduct = {

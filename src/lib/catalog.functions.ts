@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
-import { searchForAssistant, toAnswer, type CatalogProduct } from '@/lib/catalog';
+import { CATALOG_SELECT, searchForAssistant, toAnswer, type CatalogProduct } from '@/lib/catalog';
 
 function publicClient() {
   const key = process.env['SUPABASE_PUBLISHABLE_KEY']!;
